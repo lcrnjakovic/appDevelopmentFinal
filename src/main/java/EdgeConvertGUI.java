@@ -1005,7 +1005,7 @@ public class EdgeConvertGUI {
       }
       if (alProductNames.size() > 0 && alSubclasses.size() > 0) { //do not recreate productName and objSubClasses arrays if the new path is empty of valid files
          productNames = (String[])alProductNames.toArray(new String[alProductNames.size()]);
-         objSubclasses = (Object[])alSubclasses.toArray(new Object[alSubclasses.size()]);
+         objSubclasses = alSubclasses.toArray(new Object[alSubclasses.size()]);
       }
    }
    
@@ -1272,7 +1272,7 @@ public class EdgeConvertGUI {
          if ((ae.getSource() == jmiDTHelpAbout) || (ae.getSource() == jmiDRHelpAbout)) {
             JOptionPane.showMessageDialog(null, "EdgeConvert ERD To DDL Conversion Tool\n" +
                                                 "by Stephen A. Capperell\n" +
-                                                "© 2007-2008");
+                                                "ï¿½ 2007-2008");
          }
       } // EdgeMenuListener.actionPerformed()
    } // EdgeMenuListener
