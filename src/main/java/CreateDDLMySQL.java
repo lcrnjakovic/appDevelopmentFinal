@@ -13,7 +13,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
    } //CreateDDLMySQL(EdgeTable[], EdgeField[])
    
    public CreateDDLMySQL() { //default constructor with empty arg list for to allow output dir to be set before there are table and field objects
-      
+
    }
    
    public void createDDL() {
@@ -42,7 +42,10 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                   if (!currentField.getDefaultValue().equals("")) {
                      if (currentField.getDataType() == 1) { //boolean data type
                         sb.append(" DEFAULT ").append(convertStrBooleanToInt(currentField.getDefaultValue()));
-                     } else { //any other data type
+                     } else if(currentField.getDataType() == 0) {
+                        sb.append(" DEFAULT '").append((currentField.getDefaultValue())).append("'");
+                     } else
+                      { //any other data type
                         sb.append(" DEFAULT ").append(currentField.getDefaultValue());
                      }
                   }
@@ -55,7 +58,11 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                   if (currentField.getFieldBound() != 0) {
                      numForeignKey++;
                   }
-                  sb.append(",\r\n"); //end of field
+                  if (!((nativeFieldCount+1) == nativeFields.length)){
+                     sb.append(",\r\n"); //end of field
+                  } else{
+                     sb.append("\r\n");
+                  }
                }
                if (numPrimaryKey > 0) { //table has primary key(s)
                   sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_PK PRIMARY KEY (");
