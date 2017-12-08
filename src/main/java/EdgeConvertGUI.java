@@ -81,6 +81,8 @@ class EdgeConvertGUI {
    private static JMenuItem jmiDTOptionsOutputLocation;
    private static JMenuItem jmiDTOptionsShowProducts;
    private static JMenuItem jmiDTHelpAbout;
+   private static JMenuItem jmiDTHelpInstructions;
+   private static JMenuItem jmiDRHelpInstructions;
    
    //Define Relations screen objects
    private static JFrame jfDR;
