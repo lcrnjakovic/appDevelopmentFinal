@@ -1,0 +1,28 @@
+<database name="MySQLDB">
+	<table name="STUDENT">
+		<fields>
+			<field name="StudentSSN" type="VARCHAR" length="1" notNull="false" default=""/>
+			<field name="StudentName" type="VARCHAR" length="1" notNull="false" default=""/>
+		</fields>
+		<constraints>
+<!-- <constraint name = "" type="" field="" referencesTable="" referencesField=""> -->
+		</constraints>
+	</table>
+	<table name="FACULTY">
+		<fields>
+			<field name="FacultyName" type="VARCHAR" length="1" notNull="true" default=""/>
+			<field name="FacSSN" type="VARCHAR" length="1" notNull="false" default=""/>
+		</fields>
+		<constraints>
+			<constraint name="FACULTY_PK" type="PRIMARY KEY" field="Facultyname" referencesTable="" referencesField=""/>
+		</constraints>
+	</table>
+	<table name="COURSES">
+		<fields>
+			<field name="Grade" type="VARCHAR" length="1" notNull="false" default=""/>
+			<field name="Number" type="VARCHAR" length="1" notNull="false" default=""/>
+		</fields>
+		<constraints>
+		</constraints>
+	</table>
+</database>
