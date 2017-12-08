@@ -41,7 +41,6 @@
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Enumeration;
-import javax.swing.*;
 import javax.swing.filechooser.*;
 
 /**
@@ -63,12 +62,12 @@ import javax.swing.filechooser.*;
  * @version 1.14 01/23/03
  * @author Jeff Dinkins
  */
-public class ExampleFileFilter extends FileFilter {
+class ExampleFileFilter extends FileFilter {
 
     private static String TYPE_UNKNOWN = "Type Unknown";
     private static String HIDDEN_FILE = "Hidden File";
 
-    private Hashtable filters = null;
+    private Hashtable<String, ExampleFileFilter> filters = null;
     private String description = null;
     private String fullDescription = null;
     private boolean useExtensionsInDescription = true;
@@ -79,8 +78,8 @@ public class ExampleFileFilter extends FileFilter {
      *
      * @see #addExtension
      */
-    public ExampleFileFilter() {
-	this.filters = new Hashtable();
+	private ExampleFileFilter() {
+	this.filters = new Hashtable<>();
     }
 
     /**
@@ -129,12 +128,12 @@ public class ExampleFileFilter extends FileFilter {
      *
      * @see #addExtension
      */
-    public ExampleFileFilter(String[] filters, String description) {
+	private ExampleFileFilter(String[] filters, String description) {
 	this();
-	for (int i = 0; i < filters.length; i++) {
-	    // add filters one by one
-	    addExtension(filters[i]);
-	}
+		for (String filter : filters) {
+			// add filters one by one
+			addExtension(filter);
+		}
  	if(description!=null) setDescription(description);
     }
 
@@ -145,8 +144,7 @@ public class ExampleFileFilter extends FileFilter {
      * Files that begin with "." are ignored.
      *
      * @see #getExtension
-     * @see FileFilter#accepts
-     */
+	 */
     public boolean accept(File f) {
 	if(f != null) {
 	    if(f.isDirectory()) {
@@ -166,7 +164,7 @@ public class ExampleFileFilter extends FileFilter {
      * @see #getExtension
      * @see FileFilter#accept
      */
-     public String getExtension(File f) {
+	private String getExtension(File f) {
 	if(f != null) {
 	    String filename = f.getName();
 	    int i = filename.lastIndexOf('.');
@@ -189,9 +187,9 @@ public class ExampleFileFilter extends FileFilter {
      *
      * Note that the "." before the extension is not needed and will be ignored.
      */
-    public void addExtension(String extension) {
+	private void addExtension(String extension) {
 	if(filters == null) {
-	    filters = new Hashtable(5);
+	    filters = new Hashtable<>(5);
 	}
 	filters.put(extension.toLowerCase(), this);
 	fullDescription = null;
@@ -212,7 +210,7 @@ public class ExampleFileFilter extends FileFilter {
 	    if(description == null || isExtensionListInDescription()) {
  		fullDescription = description==null ? "(" : description + " (";
 		// build the description from the extension list
-		Enumeration extensions = filters.keys();
+		Enumeration<String> extensions = filters.keys();
 		if(extensions != null) {
 		    fullDescription += "." + extensions.nextElement();
 		    while (extensions.hasMoreElements()) {
@@ -235,7 +233,7 @@ public class ExampleFileFilter extends FileFilter {
      * @see setExtensionListInDescription
      * @see isExtensionListInDescription
      */
-    public void setDescription(String description) {
+	private void setDescription(String description) {
 	this.description = description;
 	fullDescription = null;
     }
@@ -267,7 +265,7 @@ public class ExampleFileFilter extends FileFilter {
      * @see setDescription
      * @see setExtensionListInDescription
      */
-    public boolean isExtensionListInDescription() {
+	private boolean isExtensionListInDescription() {
 	return useExtensionsInDescription;
     }
 }

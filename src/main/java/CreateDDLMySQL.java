@@ -1,16 +1,11 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;   
-import javax.swing.event.*;
-import java.io.*;
-import java.util.*;
+import javax.swing.*;
 
 public class CreateDDLMySQL extends EdgeConvertCreateDDL {
 
-   protected String databaseName;
+   private String databaseName;
    //this array is for determining how MySQL refers to datatypes
-   protected String[] strDataType = {"VARCHAR", "BOOL", "INT", "DOUBLE"};
-   protected StringBuffer sb;
+   private final String[] strDataType = {"VARCHAR", "BOOL", "INT", "DOUBLE"};
+   private StringBuffer sb;
 
    public CreateDDLMySQL(EdgeTable[] inputTables, EdgeField[] inputFields) {
       super(inputTables, inputFields);
@@ -24,12 +19,12 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
    public void createDDL() {
       EdgeConvertGUI.setReadSuccess(true);
       databaseName = generateDatabaseName();
-      sb.append("CREATE DATABASE " + databaseName + ";\r\n");
-      sb.append("USE " + databaseName + ";\r\n");
+      sb.append("CREATE DATABASE ").append(databaseName).append(";\r\n");
+      sb.append("USE ").append(databaseName).append(";\r\n");
       for (int boundCount = 0; boundCount <= maxBound; boundCount++) { //process tables in order from least dependent (least number of bound tables) to most dependent
          for (int tableCount = 0; tableCount < numBoundTables.length; tableCount++) { //step through list of tables
             if (numBoundTables[tableCount] == boundCount) { //
-               sb.append("CREATE TABLE " + tables[tableCount].getName() + " (\r\n");
+               sb.append("CREATE TABLE ").append(tables[tableCount].getName()).append(" (\r\n");
                int[] nativeFields = tables[tableCount].getNativeFieldsArray();
                int[] relatedFields = tables[tableCount].getRelatedFieldsArray();
                boolean[] primaryKey = new boolean[nativeFields.length];
@@ -37,18 +32,18 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                int numForeignKey = 0;
                for (int nativeFieldCount = 0; nativeFieldCount < nativeFields.length; nativeFieldCount++) { //print out the fields
                   EdgeField currentField = getField(nativeFields[nativeFieldCount]);
-                  sb.append("\t" + currentField.getName() + " " + strDataType[currentField.getDataType()]);
+                  sb.append("\t").append(currentField.getName()).append(" ").append(strDataType[currentField.getDataType()]);
                   if (currentField.getDataType() == 0) { //varchar
-                     sb.append("(" + currentField.getVarcharValue() + ")"); //append varchar length in () if data type is varchar
+                     sb.append("(").append(currentField.getVarcharValue()).append(")"); //append varchar length in () if data type is varchar
                   }
                   if (currentField.getDisallowNull()) {
                      sb.append(" NOT NULL");
                   }
                   if (!currentField.getDefaultValue().equals("")) {
                      if (currentField.getDataType() == 1) { //boolean data type
-                        sb.append(" DEFAULT " + convertStrBooleanToInt(currentField.getDefaultValue()));
+                        sb.append(" DEFAULT ").append(convertStrBooleanToInt(currentField.getDefaultValue()));
                      } else { //any other data type
-                        sb.append(" DEFAULT " + currentField.getDefaultValue());
+                        sb.append(" DEFAULT ").append(currentField.getDefaultValue());
                      }
                   }
                   if (currentField.getIsPrimaryKey()) {
@@ -63,7 +58,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                   sb.append(",\r\n"); //end of field
                }
                if (numPrimaryKey > 0) { //table has primary key(s)
-                  sb.append("CONSTRAINT " + tables[tableCount].getName() + "_PK PRIMARY KEY (");
+                  sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_PK PRIMARY KEY (");
                   for (int i = 0; i < primaryKey.length; i++) {
                      if (primaryKey[i]) {
                         sb.append(getField(nativeFields[i]).getName());
@@ -83,9 +78,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                   int currentFK = 1;
                   for (int i = 0; i < relatedFields.length; i++) {
                      if (relatedFields[i] != 0) {
-                        sb.append("CONSTRAINT " + tables[tableCount].getName() + "_FK" + currentFK +
-                                  " FOREIGN KEY(" + getField(nativeFields[i]).getName() + ") REFERENCES " +
-                                  getTable(getField(nativeFields[i]).getTableBound()).getName() + "(" + getField(relatedFields[i]).getName() + ")");
+                        sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_FK").append(currentFK).append(" FOREIGN KEY(").append(getField(nativeFields[i]).getName()).append(") REFERENCES ").append(getTable(getField(nativeFields[i]).getTableBound()).getName()).append("(").append(getField(relatedFields[i]).getName()).append(")");
                         if (currentFK < numForeignKey) {
                            sb.append(",\r\n");
                         }
@@ -100,7 +93,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
       }
    }
 
-   protected int convertStrBooleanToInt(String input) { //MySQL uses '1' and '0' for boolean types
+   private int convertStrBooleanToInt(String input) { //MySQL uses '1' and '0' for boolean types
       if (input.equals("true")) {
          return 1;
       } else {
@@ -108,7 +101,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
       }
    }
    
-   public String generateDatabaseName() { //prompts user for database name
+   private String generateDatabaseName() { //prompts user for database name
       String dbNameDefault = "MySQLDB";
       //String databaseName = "";
 

@@ -1,12 +1,13 @@
 import java.util.*;
 
 public class EdgeTable {
-   private int numFigure;
-   private String name;
-   private ArrayList alRelatedTables, alNativeFields;
+   private final int numFigure;
+   private final String name;
+   private final ArrayList alRelatedTables;
+   private final ArrayList alNativeFields;
    private int[] relatedTables, relatedFields, nativeFields;
    
-   public EdgeTable(String inputString) {
+   EdgeTable(String inputString) {
       StringTokenizer st = new StringTokenizer(inputString, EdgeConvertFileParser.DELIM);
       numFigure = Integer.parseInt(st.nextToken());
       name = st.nextToken();
@@ -14,39 +15,39 @@ public class EdgeTable {
       alNativeFields = new ArrayList();
    }
    
-   public int getNumFigure() {
+   int getNumFigure() {
       return numFigure;
    }
    
-   public String getName() {
+   String getName() {
       return name;
    }
    
-   public void addRelatedTable(int relatedTable) {
-      alRelatedTables.add(new Integer(relatedTable));
+   void addRelatedTable(int relatedTable) {
+      alRelatedTables.add(relatedTable);
    }
-   
-   public int[] getRelatedTablesArray() {
+
+   int[] getRelatedTablesArray() {
       return relatedTables;
    }
    
-   public int[] getRelatedFieldsArray() {
+   int[] getRelatedFieldsArray() {
       return relatedFields;
    }
    
-   public void setRelatedField(int index, int relatedValue) {
+   void setRelatedField(int index, int relatedValue) {
       relatedFields[index] = relatedValue;
    }
    
-   public int[] getNativeFieldsArray() {
+   int[] getNativeFieldsArray() {
       return nativeFields;
    }
 
-   public void addNativeField(int value) {
-      alNativeFields.add(new Integer(value));
+   void addNativeField(int value) {
+      alNativeFields.add(value);
    }
 
-   public void moveFieldUp(int index) { //move the field closer to the beginning of the list
+   void moveFieldUp(int index) { //move the field closer to the beginning of the list
       if (index == 0) {
          return;
       }
@@ -58,7 +59,7 @@ public class EdgeTable {
       relatedFields[index] = tempRelated; //copy saved element to target's original location
    }
    
-   public void moveFieldDown(int index) { //move the field closer to the end of the list
+   void moveFieldDown(int index) { //move the field closer to the end of the list
       if (index == (nativeFields.length - 1)) {
          return;
       }
@@ -70,18 +71,18 @@ public class EdgeTable {
       relatedFields[index] = tempRelated; //copy saved element to target's original location
    }
 
-   public void makeArrays() { //convert the ArrayLists into int[]
+   void makeArrays() { //convert the ArrayLists into int[]
       Integer[] temp;
       temp = (Integer[])alNativeFields.toArray(new Integer[alNativeFields.size()]);
       nativeFields = new int[temp.length];
       for (int i = 0; i < temp.length; i++) {
-         nativeFields[i] = temp[i].intValue();
+         nativeFields[i] = temp[i];
       }
       
       temp = (Integer[])alRelatedTables.toArray(new Integer[alRelatedTables.size()]);
       relatedTables = new int[temp.length];
       for (int i = 0; i < temp.length; i++) {
-         relatedTables[i] = temp[i].intValue();
+         relatedTables[i] = temp[i];
       }
       
       relatedFields = new int[nativeFields.length];
@@ -91,10 +92,10 @@ public class EdgeTable {
    }
 
    public String toString() {
-      StringBuffer sb = new StringBuffer();
-      sb.append("Table: " + numFigure + "\r\n");
+      StringBuilder sb = new StringBuilder();
+      sb.append("Table: ").append(numFigure).append("\r\n");
       sb.append("{\r\n");
-      sb.append("TableName: " + name + "\r\n");
+      sb.append("TableName: ").append(name).append("\r\n");
       sb.append("NativeFields: ");
       for (int i = 0; i < nativeFields.length; i++) {
          sb.append(nativeFields[i]);

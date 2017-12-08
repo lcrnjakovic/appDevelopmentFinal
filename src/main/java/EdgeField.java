@@ -1,10 +1,16 @@
 import java.util.StringTokenizer;
 
 public class EdgeField {
-   private int numFigure, tableID, tableBound, fieldBound, dataType, varcharValue;
-   private String name, defaultValue;
+   private final int numFigure;
+   private int tableID;
+   private int tableBound;
+   private int fieldBound;
+   private int dataType;
+   private int varcharValue;
+   private final String name;
+   private String defaultValue;
    private boolean disallowNull, isPrimaryKey;
-   private static String[] strDataType = {"Varchar", "Boolean", "Integer", "Double"};
+   private static final String[] strDataType = {"Varchar", "Boolean", "Integer", "Double"};
    public static final int VARCHAR_DEFAULT_LENGTH = 1;
    
    public EdgeField(String inputString) {

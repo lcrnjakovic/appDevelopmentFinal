@@ -4,20 +4,20 @@ import javax.swing.*;
 
 class EdgeConvertFileParser {
    //private String filename = "test.edg";
-   private File parseFile;
+   private final File parseFile;
    private BufferedReader br;
    private String currentLine;
-   private ArrayList<EdgeTable> alTables;
-   private ArrayList<EdgeField> alFields;
-   private ArrayList<EdgeConnector> alConnectors;
+   private final ArrayList<EdgeTable> alTables;
+   private final ArrayList<EdgeField> alFields;
+   private final ArrayList<EdgeConnector> alConnectors;
    private EdgeTable[] tables;
    private EdgeField[] fields;
    private EdgeConnector[] connectors;
    private boolean isEntity, isAttribute, isUnderlined = false;
    private int numFigure;
    private int numConnector;
-   private int numNativeRelatedFields;
-   private int numLine;
+   //private int numNativeRelatedFields;
+   //private int numLine;
    private static final String EDGE_ID = "EDGE Diagram File"; //first line of .edg files should be this
    static final String SAVE_ID = "# EdgeConvert Save File"; //first line of save files should be this
    static final String DELIM = "|";
@@ -31,7 +31,7 @@ class EdgeConvertFileParser {
       isEntity = false;
       isAttribute = false;
       parseFile = constructorFile;
-      numLine = 0;
+      //numLine = 0;
       this.openFile(parseFile);
    }
 /*
@@ -193,7 +193,7 @@ class EdgeConvertFileParser {
       } // connectors for() loop
    } // resolveConnectors()
    
-   private void parseSaveFile() throws IOException { //this method is fucked
+   private void parseSaveFile() throws IOException {
       StringTokenizer stTables, stNatFields, stRelFields, stField;
       // String stNatRelFields;
       EdgeTable tempTable;
@@ -289,7 +289,7 @@ class EdgeConvertFileParser {
          br = new BufferedReader(fr);
          //test for what kind of file we have
          currentLine = br.readLine().trim();
-         numLine++;
+         //numLine++;
          if (currentLine.startsWith(EDGE_ID)) { //the file chosen is an Edge Diagrammer file
             this.parseEdgeFile(); //parse the file
             br.close();
@@ -310,7 +310,7 @@ class EdgeConvertFileParser {
          System.exit(0);
       } // catch FileNotFoundException
       catch (IOException ioe) {
-         System.out.println(ioe);
+         System.out.println(ioe.toString());
          System.exit(0);
       } // catch IOException
    } // openFile()

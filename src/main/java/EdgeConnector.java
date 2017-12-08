@@ -1,8 +1,11 @@
 import java.util.StringTokenizer;
 
-public class EdgeConnector {
-   private int numConnector, endPoint1, endPoint2;
-   private String endStyle1, endStyle2;
+class EdgeConnector {
+   private final int numConnector;
+   private final int endPoint1;
+   private final int endPoint2;
+   private final String endStyle1;
+   private final String endStyle2;
    private boolean isEP1Field, isEP2Field, isEP1Table, isEP2Table;
       
    public EdgeConnector(String inputString) {

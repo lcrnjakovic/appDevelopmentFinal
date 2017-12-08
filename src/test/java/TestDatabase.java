@@ -16,7 +16,7 @@ public class TestDatabase {
      */
     @Test
     public void testDBConnection(){
-        String connSuccess = "";
+        String connSuccess;
         try{
             DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb?verifyServerCertificate=false&useSSL=true","root","student");
             connSuccess = "connected";
@@ -56,16 +56,16 @@ public class TestDatabase {
                     statement.executeUpdate(line);
                 }
                 scanner.close();
-                StringBuffer output = new StringBuffer();
+                StringBuilder output = new StringBuilder();
                 Process p;
                 try {
                     p = Runtime.getRuntime().exec("/usr/local/mysql/bin/mysqlcheck -u root -pstudent -c mydb");
                     p.waitFor();
                     BufferedReader reader =
                             new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    String line = "";
+                    String line;
                     while ((line = reader.readLine())!= null) {
-                        output.append(line + "\n");
+                        output.append(line).append("\n");
                     }
 
                 } catch (Exception e) {
