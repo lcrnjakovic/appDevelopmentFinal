@@ -32,7 +32,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                int numForeignKey = 0;
                for (int nativeFieldCount = 0; nativeFieldCount < nativeFields.length; nativeFieldCount++) { //print out the fields
                   EdgeField currentField = getField(nativeFields[nativeFieldCount]);
-                  sb.append("\t").append(currentField.getName()).append(" ").append(strDataType[currentField.getDataType()]);
+                  sb.append("\t\"").append(currentField.getName()).append("\" ").append(strDataType[currentField.getDataType()]);
                   if (currentField.getDataType() == 0) { //varchar
                      sb.append("(").append(currentField.getVarcharValue()).append(")"); //append varchar length in () if data type is varchar
                   }
@@ -65,7 +65,7 @@ public class CreateDDLMySQL extends EdgeConvertCreateDDL {
                   }
                }
                if (numPrimaryKey > 0) { //table has primary key(s)
-                  sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_PK PRIMARY KEY (");
+                  sb.append(",CONSTRAINT ").append(tables[tableCount].getName()).append("_PK PRIMARY KEY (");
                   for (int i = 0; i < primaryKey.length; i++) {
                      if (primaryKey[i]) {
                         sb.append(getField(nativeFields[i]).getName());

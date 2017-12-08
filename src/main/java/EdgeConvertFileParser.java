@@ -1,6 +1,13 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 class EdgeConvertFileParser {
    //private String filename = "test.edg";
@@ -21,6 +28,7 @@ class EdgeConvertFileParser {
    private static final String EDGE_ID = "EDGE Diagram File"; //first line of .edg files should be this
    static final String SAVE_ID = "# EdgeConvert Save File"; //first line of save files should be this
    static final String DELIM = "|";
+   private static final String XML_ID ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //first line of .xml files should be this
    
    EdgeConvertFileParser(File constructorFile) {
       numFigure = 0;
@@ -282,29 +290,83 @@ class EdgeConvertFileParser {
    EdgeField[] getEdgeFields() {
       return fields;
    }
-   
+
+   private void parseXMLFile(File inputFile){
+      try
+      {
+         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+         Document doc = dBuilder.parse(inputFile);
+         doc.getDocumentElement().normalize();
+         NodeList nList = doc.getElementsByTagName("table");
+
+         for (int temp = 0; temp < nList.getLength(); temp++) {
+
+            Node nNode = nList.item(temp);
+
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+               Element eElement = (Element) nNode;
+               numFigure ++;
+               int num =1;
+               alTables.add( new EdgeTable(numFigure + DELIM + eElement.getAttribute("name")));
+               NodeList fields = eElement.getElementsByTagName("field");
+
+
+               for (int i = 0; i < fields.getLength(); i++) {
+                  Element f = (Element) fields.item(i);
+                  // System.out.println(numFigure);
+                  EdgeField tempField = new EdgeField(numFigure + DELIM +  f.getAttribute("name"));
+                  System.out.println(tempField);
+
+                  tempField.setIsPrimaryKey(true);
+                  alFields.add(tempField);
+                  EdgeConnector edgeConnector = new EdgeConnector(numFigure + DELIM + num + DELIM + numFigure + DELIM + "null" + DELIM + "null");
+                  alConnectors.add(edgeConnector);
+
+                  numFigure ++;
+               }
+            }
+         }
+      }catch (Exception e){
+         e.printStackTrace();
+      }
+
+   }
+
    private void openFile(File inputFile) {
       try {
          FileReader fr = new FileReader(inputFile);
          br = new BufferedReader(fr);
          //test for what kind of file we have
+         //System.out.println(br.readLine());
          currentLine = br.readLine().trim();
+
          //numLine++;
-         if (currentLine.startsWith(EDGE_ID)) { //the file chosen is an Edge Diagrammer file
-            this.parseEdgeFile(); //parse the file
+
+         if (currentLine.startsWith(XML_ID)) { //the file chosen is an Edge Diagrammer file
+            this.parseXMLFile(inputFile); //parse the file
             br.close();
             this.makeArrays(); //convert ArrayList objects into arrays of the appropriate Class type
             this.resolveConnectors(); //Identify nature of Connector endpoints
-         } else {
-            if (currentLine.startsWith(SAVE_ID)) { //the file chosen is a Save file created by this application
-               this.parseSaveFile(); //parse the file
+         }else {
+            if (currentLine.startsWith(EDGE_ID)) { //the file chosen is an Edge Diagrammer file
+               this.parseEdgeFile(); //parse the file
                br.close();
                this.makeArrays(); //convert ArrayList objects into arrays of the appropriate Class type
-            } else { //the file chosen is something else
-               JOptionPane.showMessageDialog(null, "Unrecognized file format");
+               this.resolveConnectors(); //Identify nature of Connector endpoints
+            } else {
+               if (currentLine.startsWith(SAVE_ID)) { //the file chosen is a Save file created by this application
+                  this.parseSaveFile(); //parse the file
+                  br.close();
+                  this.makeArrays(); //convert ArrayList objects into arrays of the appropriate Class type
+               } else { //the file chosen is something else
+                  JOptionPane.showMessageDialog(null, "Unrecognized file format");
+               }
             }
          }
       } // try
+
       catch (FileNotFoundException fnfe) {
          System.out.println("Cannot find \"" + inputFile.getName() + "\".");
          System.exit(0);
@@ -313,5 +375,6 @@ class EdgeConvertFileParser {
          System.out.println(ioe.toString());
          System.exit(0);
       } // catch IOException
+      catch(Exception e){e.printStackTrace();}
    } // openFile()
 } // EdgeConvertFileHandler
