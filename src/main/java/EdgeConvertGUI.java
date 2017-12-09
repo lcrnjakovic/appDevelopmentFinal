@@ -620,9 +620,9 @@ class EdgeConvertGUI {
                   dlmDRTablesRelatedTo.removeAllElements();
                   dlmDRFieldsTablesRelatedTo.removeAllElements();
                   for (int currentNativeField : currentNativeFields) {
-                     if(getIsPrimaryKey(currentNativeField)) {
+
                         dlmDRFieldsTablesRelations.addElement(getFieldName(currentNativeField));
-                     }
+
                   }
                   for (int currentRelatedTable : currentRelatedTables) {
                      dlmDRTablesRelatedTo.addElement(getTableName(currentRelatedTable));
