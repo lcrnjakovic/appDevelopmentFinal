@@ -29,14 +29,9 @@ public class CreateDDLOracle extends EdgeConvertCreateDDL {
                     boolean[] primaryKey = new boolean[nativeFields.length];
                     int numPrimaryKey = 0;
                     int numForeignKey = 0;
-                    String changeFieldName = "";
                     for (int nativeFieldCount = 0; nativeFieldCount < nativeFields.length; nativeFieldCount++) { //print out the fields
                         EdgeField currentField = getField(nativeFields[nativeFieldCount]);
-                        String tableName = tables[tableCount].getName();
-                        if(!currentField.getName().toUpperCase().contains(tableName.toUpperCase().substring(0,2))){
-                            changeFieldName = Character.toUpperCase(tableName.charAt(0)) + tableName.substring(1).toLowerCase();
-                        }
-                        sb.append("\t").append(changeFieldName).append(currentField.getName()).append(" ").append(strDataType[currentField.getDataType()]);
+                        sb.append("\t").append("\"").append(currentField.getName()).append("\" ").append(strDataType[currentField.getDataType()]);
                         if (currentField.getDataType() == 0) { //varchar
                             sb.append("(").append(currentField.getVarcharValue()).append(")"); //append varchar length in () if data type is varchar
                         }
@@ -70,7 +65,7 @@ public class CreateDDLOracle extends EdgeConvertCreateDDL {
                         sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_PK PRIMARY KEY (");
                         for (int i = 0; i < primaryKey.length; i++) {
                             if (primaryKey[i]) {
-                                sb.append(changeFieldName).append(getField(nativeFields[i]).getName());
+                                sb.append("\"").append(getField(nativeFields[i]).getName()).append("\"");
                                 numPrimaryKey--;
                                 if (numPrimaryKey > 0) {
                                     sb.append(", ");
@@ -87,7 +82,7 @@ public class CreateDDLOracle extends EdgeConvertCreateDDL {
                         int currentFK = 1;
                         for (int i = 0; i < relatedFields.length; i++) {
                             if (relatedFields[i] != 0) {
-                                sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_FK").append(currentFK).append(" FOREIGN KEY(").append(changeFieldName).append(getField(nativeFields[i]).getName()).append(") REFERENCES ").append(getTable(getField(nativeFields[i]).getTableBound()).getName()).append("(").append(getField(relatedFields[i]).getName()).append(")");
+                                sb.append("CONSTRAINT ").append(tables[tableCount].getName()).append("_FK").append(currentFK).append(" FOREIGN KEY(").append("\"").append(getField(nativeFields[i]).getName()).append("\") REFERENCES ").append(getTable(getField(nativeFields[i]).getTableBound()).getName()).append("(\"").append(getField(relatedFields[i]).getName()).append("\")");
                                 if (currentFK < numForeignKey) {
                                     sb.append(",\r\n");
                                 }
