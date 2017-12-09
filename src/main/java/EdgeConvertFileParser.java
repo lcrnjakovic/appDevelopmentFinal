@@ -128,7 +128,6 @@ class EdgeConvertFileParser {
             String endStyle1 = currentLine.substring(currentLine.indexOf("\"") + 1, currentLine.lastIndexOf("\""));
             currentLine = br.readLine().trim(); // End2
             String endStyle2 = currentLine.substring(currentLine.indexOf("\"") + 1, currentLine.lastIndexOf("\""));
-
             do { //advance to end of record
                currentLine = br.readLine().trim();
             } while (!currentLine.equals("}")); // this is the end of a Connector entry
