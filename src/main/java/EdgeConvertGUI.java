@@ -620,7 +620,9 @@ class EdgeConvertGUI {
                   dlmDRTablesRelatedTo.removeAllElements();
                   dlmDRFieldsTablesRelatedTo.removeAllElements();
                   for (int currentNativeField : currentNativeFields) {
-                     dlmDRFieldsTablesRelations.addElement(getFieldName(currentNativeField));
+                     if(getIsPrimaryKey(currentNativeField)) {
+                        dlmDRFieldsTablesRelations.addElement(getFieldName(currentNativeField));
+                     }
                   }
                   for (int currentRelatedTable : currentRelatedTables) {
                      dlmDRTablesRelatedTo.addElement(getTableName(currentRelatedTable));
@@ -868,6 +870,15 @@ class EdgeConvertGUI {
          }
       }
       return "";
+   }
+
+   private boolean getIsPrimaryKey(int numFigure) {
+      for (EdgeField field : fields) {
+         if (field.getNumFigure() == numFigure) {
+            return field.getIsPrimaryKey();
+         }
+      }
+      return false;
    }
 
    private void enableControls() {
