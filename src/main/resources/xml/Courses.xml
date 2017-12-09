@@ -2,7 +2,7 @@
 <database name="MySQLDB">
 	<table name="STUDENT" id="1" relatedTables="">
 		<fields>
-			<field name="StudentSSN" type="VARCHAR" length="1" notNull="false" default=""/>
+			<field name="StudentSSN" type="VARCHAR" length="1" notNull="true" default=""/>
 			<field name="StudentName" type="VARCHAR" length="1" notNull="false" default=""/>
 		</fields>
 		<constraints>
@@ -15,13 +15,14 @@
 			<field name="FacSSN" type="VARCHAR" length="1" notNull="false" default=""/>
 		</fields>
 		<constraints>
-			<constraint name="FACULTY_PK" type="PRIMARY KEY" field="Facultyname" referencesTable="" referencesField=""/>
+			<!--<constraint name="FACULTY_PK" type="PRIMARY KEY" field="Facultyname" referencesTable="" referencesField=""/>-->
 		</constraints>
 	</table>
 	<table name="COURSES" id="13" relatedTables="2">
 		<fields>
 			<field name="Grade" type="VARCHAR" length="1" notNull="false" default=""/>
-			<field name="Number" type="VARCHAR" length="1" notNull="false" default=""/>
+			<field name="Number" type="VARCHAR" length="1" notNull="false" default=""/>\
+			<field name="CourseName" type="VARCHAR" length="1" notNull="false" default=""/>
 		</fields>
 		<constraints>
 		</constraints>

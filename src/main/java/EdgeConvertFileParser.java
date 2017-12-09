@@ -1,3 +1,4 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -331,6 +332,19 @@ class EdgeConvertFileParser {
                      tempField.setDataType(3);
                   }
                   // set constraints
+                  String fieldNotNull = f.getAttribute("notNull");
+                  if(!fieldNotNull.equals("")){
+                     tempField.setDisallowNull(Boolean.parseBoolean(fieldNotNull));
+                  }
+                  String defaultValue = f.getAttribute("default");
+                  if(!defaultValue.equals("")){
+                     tempField.setDefaultValue(defaultValue);
+                  }
+                  String fieldLength = f.getAttribute("length");
+                  if(!fieldLength.equals("")){
+                     if(dataType.equals("VARCHAR"))
+                        tempField.setVarcharValue(Integer.valueOf(fieldLength));
+                  }
 
 
                   alFields.add(tempField);
