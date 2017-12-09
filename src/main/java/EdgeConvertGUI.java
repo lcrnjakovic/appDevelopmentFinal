@@ -769,6 +769,10 @@ class EdgeConvertGUI {
                           return;
                        }
                     }
+                    if(!currentDRField1.getIsPrimaryKey()){
+                       JOptionPane.showMessageDialog(null, currentDRField1.getName() + " is not a primary key. Only bind relations to primary keys, molim lepo.");
+                       return;
+                    }
                     currentDRTable1.setRelatedField(nativeIndex, relatedField);
                     currentDRField1.setTableBound(currentDRTable2.getNumFigure());
                     currentDRField1.setFieldBound(currentDRField2.getNumFigure());
