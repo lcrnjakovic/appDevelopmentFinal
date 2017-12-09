@@ -28,8 +28,8 @@ class EdgeConvertFileParser {
    private static final String EDGE_ID = "EDGE Diagram File"; //first line of .edg files should be this
    static final String SAVE_ID = "# EdgeConvert Save File"; //first line of save files should be this
    static final String DELIM = "|";
-   private static final String XML_ID ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //first line of .xml files should be this
-   
+   private static final String XML_ID = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //first line of .xml files should be this
+
    EdgeConvertFileParser(File constructorFile) {
       numFigure = 0;
       numConnector = 0;
@@ -42,13 +42,14 @@ class EdgeConvertFileParser {
       //numLine = 0;
       this.openFile(parseFile);
    }
-/*
-* while loop cita iz filea
-* cita dio po dio
-* samo style bitan
-* ako ima relation, breaka
-* bitni samo entity i attribute
- */
+
+   /*
+    * while loop cita iz filea
+    * cita dio po dio
+    * samo style bitan
+    * ako ima relation, breaka
+    * bitni samo entity i attribute
+    */
    private void parseEdgeFile() throws IOException {
       while ((currentLine = br.readLine()) != null) {
          currentLine = currentLine.trim();
@@ -64,7 +65,7 @@ class EdgeConvertFileParser {
                   JOptionPane.showMessageDialog(null, "The Edge Diagrammer file\n" + parseFile + "\ncontains relations.  Please resolve them and try again.");
                   EdgeConvertGUI.setReadSuccess(false);
                   break;
-               } 
+               }
                if (style.startsWith("Entity")) {
                   isEntity = true;
                }
@@ -92,7 +93,7 @@ class EdgeConvertFileParser {
                      isUnderlined = true;
                   }
                } while (!currentLine.equals("}")); // this is the end of a Figure entry
-               
+
                if (isEntity) { //create a new EdgeTable object and add it to the alTables ArrayList
                   if (isTableDup(text)) {
                      JOptionPane.showMessageDialog(null, "There are multiple tables called " + text + " in this diagram.\nPlease rename all but one of them and try again.");
@@ -131,12 +132,12 @@ class EdgeConvertFileParser {
             do { //advance to end of record
                currentLine = br.readLine().trim();
             } while (!currentLine.equals("}")); // this is the end of a Connector entry
-            
+
             alConnectors.add(new EdgeConnector(numConnector + DELIM + endPoint1 + DELIM + endPoint2 + DELIM + endStyle1 + DELIM + endStyle2));
          } // if("Connector")
       } // while()
    } // parseEdgeFile()
-   
+
    private void resolveConnectors() { //Identify nature of Connector endpoints
       int endPoint1, endPoint2;
       int fieldIndex, table1Index = 0, table2Index = 0;
@@ -199,7 +200,7 @@ class EdgeConvertFileParser {
          }
       } // connectors for() loop
    } // resolveConnectors()
-   
+
    private void parseSaveFile() throws IOException {
       StringTokenizer stTables, stNatFields, stRelFields, stField;
       // String stNatRelFields;
@@ -213,22 +214,23 @@ class EdgeConvertFileParser {
          currentLine = br.readLine(); //this should be "TableName"
          String tableName = currentLine.substring(currentLine.indexOf(" ") + 1);
          tempTable = new EdgeTable(numFigure + DELIM + tableName);
-         
+
          currentLine = br.readLine(); //this should be the NativeFields list
          stNatFields = new StringTokenizer(currentLine.substring(currentLine.indexOf(" ") + 1), DELIM);
          int numFields = stNatFields.countTokens();
          for (int i = 0; i < numFields; i++) {
             tempTable.addNativeField(Integer.parseInt(stNatFields.nextToken()));
          }
-         
+
          currentLine = br.readLine(); //this should be the RelatedTables list
          stTables = new StringTokenizer(currentLine.substring(currentLine.indexOf(" ") + 1), DELIM);
          int numTables = stTables.countTokens();
          for (int i = 0; i < numTables; i++) {
+
             tempTable.addRelatedTable(Integer.parseInt(stTables.nextToken()));
          }
          tempTable.makeArrays();
-         
+
          currentLine = br.readLine(); //this should be the RelatedFields list
          stRelFields = new StringTokenizer(currentLine.substring(currentLine.indexOf(" ") + 1), DELIM);
          numFields = stRelFields.countTokens();
@@ -272,7 +274,7 @@ class EdgeConvertFileParser {
          connectors = alConnectors.toArray(new EdgeConnector[alConnectors.size()]);
       }
    }
-   
+
    private boolean isTableDup(String testTableName) {
       for (EdgeTable tempTable : alTables) {
          if (tempTable.getName().equals(testTableName)) {
@@ -281,24 +283,23 @@ class EdgeConvertFileParser {
       }
       return false;
    }
-   
+
    EdgeTable[] getEdgeTables() {
       return tables;
    }
-   
+
    EdgeField[] getEdgeFields() {
       return fields;
    }
 
-   private void parseXMLFile(File inputFile){
-      try
-      {
+   private void parseXMLFile(File inputFile) {
+      try {
          DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
          DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
          Document doc = dBuilder.parse(inputFile);
          doc.getDocumentElement().normalize();
          NodeList nList = doc.getElementsByTagName("table");
-
+         int numFields = 0;
          for (int temp = 0; temp < nList.getLength(); temp++) {
 
             Node nNode = nList.item(temp);
@@ -306,28 +307,54 @@ class EdgeConvertFileParser {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                Element eElement = (Element) nNode;
-               numFigure ++;
-               int num =1;
-               alTables.add( new EdgeTable(numFigure + DELIM + eElement.getAttribute("name")));
+               numFigure++;
+               int numTable = Integer.valueOf(eElement.getAttribute("id"));
                NodeList fields = eElement.getElementsByTagName("field");
 
-
+               EdgeTable tempTable = new EdgeTable(numTable + DELIM + eElement.getAttribute("name"));
                for (int i = 0; i < fields.getLength(); i++) {
                   Element f = (Element) fields.item(i);
                   // System.out.println(numFigure);
-                  EdgeField tempField = new EdgeField(numFigure + DELIM +  f.getAttribute("name"));
+                  EdgeField tempField = new EdgeField(numFigure + DELIM + f.getAttribute("name"));
                   System.out.println(tempField);
+                  tempField.setTableID(numTable);
 
-                  tempField.setIsPrimaryKey(true);
+                  String dataType = f.getAttribute("type");
+                  if (dataType.equals("VARCHAR")) {
+                     tempField.setDataType(0);
+                     tempField.setVarcharValue(Integer.valueOf(f.getAttribute("length")));
+                  } else if (dataType.equals("BOOL")) {
+                     tempField.setDataType(1);
+                  } else if (dataType.equals("INTEGER")) {
+                     tempField.setDataType(2);
+                  } else if (dataType.equals("DOUBLE")) {
+                     tempField.setDataType(3);
+                  }
+                  // set constraints
+
+
                   alFields.add(tempField);
-                  EdgeConnector edgeConnector = new EdgeConnector(numFigure + DELIM + num + DELIM + numFigure + DELIM + "null" + DELIM + "null");
-                  alConnectors.add(edgeConnector);
 
-                  numFigure ++;
+                  tempTable.addNativeField(tempField.getNumFigure());
+
+                  //EdgeConnector edgeConnector = new EdgeConnector(numFigure + DELIM + num + DELIM + numFigure + DELIM + "null" + DELIM + "null");
+                  // alConnectors.add(edgeConnector);
+                  numFigure++;
+                  numFields++;
                }
+//               for(int h = 1; h<=nList.getLength();h++){
+//                  if(tempTable.getNumFigure()!=h)
+//                     tempTable.addRelatedTable(h);
+//               }
+
+               if(!eElement.getAttribute("relatedTables").equals(""))
+                  tempTable.addRelatedTable(Integer.valueOf(eElement.getAttribute("relatedTables")));
+               tempTable.makeArrays();
+
+               alTables.add(tempTable);
             }
          }
-      }catch (Exception e){
+      } catch (Exception e) {
          e.printStackTrace();
       }
 
@@ -348,7 +375,7 @@ class EdgeConvertFileParser {
             br.close();
             this.makeArrays(); //convert ArrayList objects into arrays of the appropriate Class type
             this.resolveConnectors(); //Identify nature of Connector endpoints
-         }else {
+         } else {
             if (currentLine.startsWith(EDGE_ID)) { //the file chosen is an Edge Diagrammer file
                this.parseEdgeFile(); //parse the file
                br.close();
@@ -374,6 +401,8 @@ class EdgeConvertFileParser {
          System.out.println(ioe.toString());
          System.exit(0);
       } // catch IOException
-      catch(Exception e){e.printStackTrace();}
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    } // openFile()
 } // EdgeConvertFileHandler
