@@ -620,9 +620,7 @@ class EdgeConvertGUI {
                   dlmDRTablesRelatedTo.removeAllElements();
                   dlmDRFieldsTablesRelatedTo.removeAllElements();
                   for (int currentNativeField : currentNativeFields) {
-                     if(getIsPrimaryKey(currentNativeField)) {
-                        dlmDRFieldsTablesRelations.addElement(getFieldName(currentNativeField));
-                     }
+                     dlmDRFieldsTablesRelations.addElement(getFieldName(currentNativeField));
                   }
                   for (int currentRelatedTable : currentRelatedTables) {
                      dlmDRTablesRelatedTo.addElement(getTableName(currentRelatedTable));
@@ -768,6 +766,10 @@ class EdgeConvertGUI {
                                   "." + currentDRField2.getName() + " do not match.  Unable to bind this relation.");
                           return;
                        }
+                    }
+                    if(!currentDRField1.getIsPrimaryKey()){
+                       JOptionPane.showMessageDialog(null, currentDRField1.getName() + " is not a primary key. Only bind relations to primary keys!");
+                       return;
                     }
                     currentDRTable1.setRelatedField(nativeIndex, relatedField);
                     currentDRField1.setTableBound(currentDRTable2.getNumFigure());
