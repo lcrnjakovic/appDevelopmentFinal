@@ -769,7 +769,7 @@ class EdgeConvertGUI {
                           return;
                        }
                     }
-                    if(!currentDRField1.getIsPrimaryKey()){
+                    if(!currentDRField2.getIsPrimaryKey()){
                        JOptionPane.showMessageDialog(null, currentDRField1.getName() + " is not a primary key. Only bind relations to primary keys, molim lepo.");
                        return;
                     }
