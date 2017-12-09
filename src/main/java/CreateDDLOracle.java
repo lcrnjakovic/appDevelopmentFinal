@@ -4,7 +4,6 @@ import javax.swing.*;
  * Created by lukacrnjakovic on 12/8/17.
  */
 public class CreateDDLOracle extends EdgeConvertCreateDDL {
-    private String databaseName;
     //this array is for determining how MySQL refers to datatypes
     private final String[] strDataType = {"VARCHAR", "BOOL", "INT", "DOUBLE"};
     private StringBuffer sb;
@@ -20,7 +19,7 @@ public class CreateDDLOracle extends EdgeConvertCreateDDL {
 
     public void createDDL() {
         EdgeConvertGUI.setReadSuccess(true);
-        databaseName = generateDatabaseName();
+        databaseName = generateDatabaseName("OracleDB");
         for (int boundCount = 0; boundCount <= maxBound; boundCount++) { //process tables in order from least dependent (least number of bound tables) to most dependent
             for (int tableCount = 0; tableCount < numBoundTables.length; tableCount++) { //step through list of tables
                 if (numBoundTables[tableCount] == boundCount) { //
@@ -109,30 +108,6 @@ public class CreateDDLOracle extends EdgeConvertCreateDDL {
         } else {
             return 0;
         }
-    }
-
-    private String generateDatabaseName() { //prompts user for database name
-        String dbNameDefault = "OracleDB";
-        //String databaseName = "";
-
-        do {
-            databaseName = (String) JOptionPane.showInputDialog(
-                    null,
-                    "Enter the database name:",
-                    "Database Name",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    dbNameDefault);
-            if (databaseName == null) {
-                EdgeConvertGUI.setReadSuccess(false);
-                return "";
-            }
-            if (databaseName.equals("")) {
-                JOptionPane.showMessageDialog(null, "You must select a name for your database.");
-            }
-        } while (databaseName.equals(""));
-        return databaseName;
     }
 
     public String getDatabaseName() {

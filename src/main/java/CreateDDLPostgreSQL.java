@@ -1,7 +1,6 @@
 import javax.swing.*;
 
 public class CreateDDLPostgreSQL extends EdgeConvertCreateDDL{
-    private String databaseName;
     //this array is for determining how MySQL refers to datatypes
     private final String[] strDataType = {"VARCHAR", "BOOL", "INT", "DOUBLE"};
     private StringBuffer sb;
@@ -17,7 +16,7 @@ public class CreateDDLPostgreSQL extends EdgeConvertCreateDDL{
 
     public void createDDL() {
         EdgeConvertGUI.setReadSuccess(true);
-        databaseName = generateDatabaseName();
+        databaseName = generateDatabaseName("PostgreSQLDB");
         sb.append("CREATE DATABASE ").append(databaseName).append(";\r\n");
         sb.append("USE ").append(databaseName).append(";\r\n");
         for (int boundCount = 0; boundCount <= maxBound; boundCount++) { //process tables in order from least dependent (least number of bound tables) to most dependent
@@ -98,31 +97,6 @@ public class CreateDDLPostgreSQL extends EdgeConvertCreateDDL{
         }
     }
 
-
-
-    private String generateDatabaseName() { //prompts user for database name
-        String dbNameDefault = "PostgreSQLDB";
-        //String databaseName = "";
-
-        do {
-            databaseName = (String) JOptionPane.showInputDialog(
-                    null,
-                    "Enter the database name:",
-                    "Database Name",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    dbNameDefault);
-            if (databaseName == null) {
-                EdgeConvertGUI.setReadSuccess(false);
-                return "";
-            }
-            if (databaseName.equals("")) {
-                JOptionPane.showMessageDialog(null, "You must select a name for your database.");
-            }
-        } while (databaseName.equals(""));
-        return databaseName;
-    }
 
     public String getDatabaseName() {
         return databaseName;

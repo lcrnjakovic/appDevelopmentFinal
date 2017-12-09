@@ -1,4 +1,7 @@
+import javax.swing.*;
+
 abstract class EdgeConvertCreateDDL {
+   String databaseName;
    static String[] products = {"MySQL"};
    EdgeTable[] tables; //master copy of EdgeTable objects
    private EdgeField[] fields; //master copy of EdgeField objects
@@ -53,6 +56,29 @@ abstract class EdgeConvertCreateDDL {
          }
       }
       return null;
+   }
+
+   protected String generateDatabaseName(String dbName) { //prompts user for database name
+      //String databaseName = "";
+
+       do {
+           databaseName = (String) JOptionPane.showInputDialog(
+                   null,
+                   "Enter the database name:",
+                   "Database Name",
+                   JOptionPane.PLAIN_MESSAGE,
+                   null,
+                   null,
+                   dbName);
+           if (databaseName == null) {
+               EdgeConvertGUI.setReadSuccess(false);
+               return "";
+           }
+           if (databaseName.equals("")) {
+               JOptionPane.showMessageDialog(null, "You must select a name for your database.");
+           }
+       } while (databaseName.equals(""));
+       return databaseName;
    }
 
    public abstract String getDatabaseName();
